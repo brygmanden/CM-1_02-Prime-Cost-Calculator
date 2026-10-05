@@ -4,13 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prime Cost Check</title>
+</head>
+<body style="margin:0">
 <style>
-/* Layout: one full-width canvas; mobile layout below 600px (stacked), desktop layout from 600px (inputs and breakdown in three columns) */
+/* All styles are scoped to #pcc-canvas so the calculator works inside any page or editor.
+   Layout: one full-width canvas; mobile layout below 600px (stacked), desktop layout from 600px (inputs and breakdown in three columns) */
 @font-face{font-family:"Head-Bold";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:swap}
 @font-face{font-family:"NoBH-Bold";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:swap}
 @font-face{font-family:"NoBH-Regular";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype"),url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:swap}
 
-:root{
+#pcc-canvas{
   --pcc-bg:#f4f4f4; --pcc-text:#282828; --pcc-muted:#666666; --pcc-rule:#d9d9d9; --pcc-field:#ffffff;
   --pcc-red:#bc2654; --pcc-green:#0aa370; --pcc-blue:#148cad; --pcc-yellow:#e5bb45;
   --pcc-labour:var(--pcc-blue); --pcc-cogs:var(--pcc-yellow);
@@ -21,10 +24,9 @@
   --pcc-font-emphasis:"NoBH-Bold",sans-serif;
   --pcc-font-body:"NoBH-Regular",sans-serif;
   color-scheme:light;
+  font-family:var(--pcc-font-body);font-size:16px;line-height:1.5;
 }
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:#ffffff;color:var(--pcc-text);font-family:var(--pcc-font-body);font-size:16px;line-height:1.5}
+#pcc-canvas,#pcc-canvas *,#pcc-canvas *::before,#pcc-canvas *::after{box-sizing:border-box}
 
 /* Canvas */
 #pcc-canvas{width:100%;overflow:hidden;border-radius:6px;padding:4%;background:var(--pcc-bg);color:var(--pcc-text);display:flex;flex-direction:column;gap:20px}
@@ -100,8 +102,7 @@ body{background:#ffffff;color:var(--pcc-text);font-family:var(--pcc-font-body);f
 }
 @media (prefers-reduced-motion: reduce){#pcc-gauge-marker{transition:none}}
 </style>
-</head>
-<body>
+
 <main id="pcc-canvas" class="pcc-canvas" aria-labelledby="pcc-title">
   <h1 id="pcc-title" class="pcc-title"><span id="pcc-title-pre" class="pcc-title-pre">Prime cost –</span> Is your café under 70%?</h1>
 
