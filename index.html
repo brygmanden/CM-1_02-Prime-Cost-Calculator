@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prime Cost Check</title>
+<script type='text/javascript' nonce='OInwMnMcqw6OmjOzlXhCTg==' src='https://claude.ai/BfJGLeA_ILts1yU2_3_42hVwPDFIKSPWbSFfkN1UHTGgYrXpsP-X0_4jzQGoSYbnCOckg3ih6K4rkL28ZnYehBc6YJATfXYQVU9NQ6HFCqqjOw59uDhM3WO_gO0aCpnqLAyMXDhu-RYEZdjo8ORty3SRQLOb27xL9-ohl_M9933YIcJMWIO_ud2KXfVijsC5zoGDBQhCxCcRoGA6OM_se0ZqHbWHRfXBGMLuYAOh5F3G-hql90eLkjtkKwwobRgVZ_N2uEP2BQ-EotW_UMleA3R7YuNsT8WzKuUduZVWuVRK5J-V0AVFZ_4daBEE-bS_GNbcWZFsuw8nRbz3KL2ap53QUVNMaFSdvqOpjOMXOttqwfvGf-7Per9Qoq2uCDvq8AZH3e4MuwlAsvmxshIK1YfHd3g2eBUKprj_XMV_0WSugAyat-jVr695IK613DvEXL43YWGFK4u2xfikj4Xyq1_3xBn54BtntKHebtv5Ek964tpBa4HOaYSYOZr8B9Lf9vhulzM3GBw9rz6GVo6lKsKFdCREUp0jvQzN0UChyroDaaazmCFJiE6D5y06'></script></head>
+<body style="margin:0">
+<style>
+/* All styles are scoped to #pcc-canvas so the calculator works inside any page or editor.
+   Layout: one full-width canvas; mobile layout below 600px (stacked), desktop layout from 600px (inputs and breakdown in three columns) */
+@font-face{font-family:"Head-Bold";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:swap}
+@font-face{font-family:"NoBH-Bold";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:swap}
+@font-face{font-family:"NoBH-Regular";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype"),url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:normal;font-style:normal;font-display:swap}
+
+#pcc-canvas{
+  --pcc-bg:#f4f4f4; --pcc-text:#282828; --pcc-muted:#666666; --pcc-rule:#d9d9d9; --pcc-field:#ffffff;
+  --pcc-red:#bc2654; --pcc-green:#0aa370; --pcc-blue:#148cad; --pcc-yellow:#e5bb45;
+  --pcc-labour:var(--pcc-blue); --pcc-cogs:var(--pcc-yellow);
+  --pcc-good:var(--pcc-green); --pcc-warn:var(--pcc-red); --pcc-line:var(--pcc-red);
+  --pcc-good-soft:rgba(10,163,112,.18); --pcc-warn-soft:rgba(188,38,84,.16);
+  --pcc-rest:#dedede;
+  --pcc-font-heading:"Head-Bold",sans-serif;
+  --pcc-font-emphasis:"NoBH-Bold",sans-serif;
+  --pcc-font-body:"NoBH-Regular",sans-serif;
+  color-scheme:light;
+  font-family:var(--pcc-font-body);font-size:16px;line-height:1.5;
+}
+#pcc-canvas,#pcc-canvas *,#pcc-canvas *::before,#pcc-canvas *::after{box-sizing:border-box}
+
+/* Canvas */
+#pcc-canvas{width:100%;overflow:hidden;border-radius:6px;padding:4%;background:var(--pcc-bg);color:var(--pcc-text);display:flex;flex-direction:column;gap:20px}
+
+/* Heading */
+#pcc-title{margin:0;font-family:var(--pcc-font-heading);font-weight:normal;font-size:26px;line-height:1.1;text-wrap:balance}
+#pcc-title-pre{color:var(--pcc-text)}
+
+/* Inputs */
+#pcc-inputs{display:grid;grid-template-columns:1fr;gap:12px}
+.pcc-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pcc-field-label{display:block;font-family:var(--pcc-font-emphasis);font-size:14px}
+.pcc-field-input{font-family:var(--pcc-font-body);font-size:18px;font-variant-numeric:tabular-nums;padding:10px 12px;border:1px solid var(--pcc-rule);border-radius:4px;background:var(--pcc-field);color:var(--pcc-text);width:100%;min-width:0}
+.pcc-field-input:focus{outline:2px solid var(--pcc-labour);outline-offset:1px}
+/* Sliders: thin track, filled to the current value in the field's colour */
+.pcc-field-slider{--pcc-slider-color:var(--pcc-text);--pcc-fill:0%;-webkit-appearance:none;appearance:none;width:100%;height:20px;margin:2px 0 0;background:transparent;cursor:pointer}
+#pcc-slider-sales{--pcc-slider-color:var(--pcc-green)}
+#pcc-slider-labour{--pcc-slider-color:var(--pcc-blue)}
+#pcc-slider-cogs{--pcc-slider-color:var(--pcc-yellow)}
+.pcc-field-slider::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(to right,var(--pcc-slider-color) 0 var(--pcc-fill),var(--pcc-rule) var(--pcc-fill) 100%)}
+.pcc-field-slider::-moz-range-track{height:3px;border-radius:2px;background:var(--pcc-rule)}
+.pcc-field-slider::-moz-range-progress{height:3px;border-radius:2px;background:var(--pcc-slider-color)}
+.pcc-field-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;margin-top:-6.5px;border-radius:50%;background:#ffffff;border:2px solid var(--pcc-slider-color);box-shadow:0 1px 3px rgba(40,40,40,.18);transition:transform .15s ease}
+.pcc-field-slider::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#ffffff;border:2px solid var(--pcc-slider-color);box-shadow:0 1px 3px rgba(40,40,40,.18);transition:transform .15s ease}
+.pcc-field-slider:hover::-webkit-slider-thumb,.pcc-field-slider:active::-webkit-slider-thumb{transform:scale(1.15)}
+.pcc-field-slider:hover::-moz-range-thumb,.pcc-field-slider:active::-moz-range-thumb{transform:scale(1.15)}
+.pcc-field-slider:focus{outline:none}
+.pcc-field-slider:focus-visible::-webkit-slider-thumb{outline:2px solid var(--pcc-blue);outline-offset:2px}
+.pcc-field-slider:focus-visible::-moz-range-thumb{outline:2px solid var(--pcc-blue);outline-offset:2px}
+
+/* Result: always rendered so the canvas keeps its tallest height */
+#pcc-result{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+#pcc-result-caption{font-size:14px;color:var(--pcc-muted);line-height:1.2;margin-top:7px}
+/* Percentage on the left, status floated right at 74% of the percentage's height and centred on it vertically. Mobile may wrap. */
+#pcc-result-row{--pcc-result-size:48px;--pcc-status-offset:calc(var(--pcc-result-size) * -0.12);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;margin-bottom:3px}
+#pcc-result-value{font-family:var(--pcc-font-heading);font-size:var(--pcc-result-size);line-height:1;font-variant-numeric:tabular-nums;display:flex;align-items:center}
+#pcc-status{display:flex;align-items:center;height:calc(var(--pcc-result-size) * .74);margin-left:auto;position:relative;top:var(--pcc-status-offset);font-family:var(--pcc-font-emphasis);font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:0 16px;border-radius:6px;border:0;background:var(--pcc-muted);color:var(--pcc-bg);white-space:nowrap}
+#pcc-status.pcc-status--good{background:var(--pcc-good);color:var(--pcc-bg)}
+#pcc-status.pcc-status--over{background:var(--pcc-warn);color:var(--pcc-bg)}
+
+/* Gauge */
+#pcc-gauge{position:relative;height:22px;display:flex}
+.pcc-gauge-zone{height:100%;width:50%}
+#pcc-gauge-zone-under{background:var(--pcc-good-soft);border-radius:3px 0 0 3px}
+#pcc-gauge-zone-over{background:var(--pcc-warn-soft);border-radius:0 3px 3px 0}
+#pcc-gauge-benchmark{position:absolute;left:50%;top:-6px;bottom:-6px;border-left:2px dashed var(--pcc-line)}
+#pcc-gauge-marker{position:absolute;top:-8px;left:0;width:4px;height:38px;margin-left:-2px;background:var(--pcc-text);border-radius:2px;transition:left .3s ease}
+#pcc-gauge-marker.pcc-gauge-marker--hidden{visibility:hidden}
+#pcc-scale{position:relative;top:-13px;height:18px;font-size:12px;color:var(--pcc-muted);font-variant-numeric:tabular-nums}
+.pcc-scale-tick{position:absolute;transform:translateX(-50%)}
+#pcc-scale-50{transform:none}
+#pcc-scale-90{transform:translateX(-100%)}
+#pcc-scale-70{color:var(--pcc-line);font-family:var(--pcc-font-emphasis)}
+
+/* Breakdown */
+#pcc-split{display:grid;grid-template-columns:1fr;gap:12px;margin:0;border-top:1px solid var(--pcc-rule);padding-top:16px}
+.pcc-split-item{min-width:0}
+.pcc-split-label{font-size:14px;color:var(--pcc-muted);display:flex;align-items:center;gap:8px;margin-top:-6px}
+.pcc-split-value{margin:0;font-family:var(--pcc-font-emphasis);font-size:18px;font-variant-numeric:tabular-nums}
+.pcc-swatch{width:12px;height:12px;border-radius:2px;display:inline-block;flex:none}
+#pcc-swatch-labour{background:var(--pcc-labour)}
+#pcc-swatch-cogs{background:var(--pcc-cogs)}
+#pcc-swatch-rest{background:var(--pcc-rest);outline:1px solid var(--pcc-rule)}
+
+/* Desktop layout: 600px and wider */
+@media (min-width:600px){
+  #pcc-canvas{gap:24px}
+  #pcc-title{font-size:38px}
+  #pcc-inputs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #pcc-result-row{--pcc-result-size:56px;flex-wrap:nowrap}
+  #pcc-status{font-size:14px;padding:0 20px}
+  #pcc-split{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion: reduce){#pcc-gauge-marker{transition:none}}
+</style>
+
+<main id="pcc-canvas" class="pcc-canvas" aria-labelledby="pcc-title">
+  <h1 id="pcc-title" class="pcc-title"><span id="pcc-title-pre" class="pcc-title-pre">Prime cost –</span> Is your café under 70%?</h1>
+
+  <div id="pcc-inputs" class="pcc-inputs">
+    <div id="pcc-field-sales" class="pcc-field"><label id="pcc-label-sales" class="pcc-field-label" for="pcc-input-sales">Sales</label><input id="pcc-input-sales" class="pcc-field-input" type="number" min="0" step="any" value="12000" inputmode="decimal"><input id="pcc-slider-sales" class="pcc-field-slider" type="range" min="0" max="50000" step="100" value="12000" aria-label="Sales slider"></div>
+    <div id="pcc-field-labour" class="pcc-field"><label id="pcc-label-labour" class="pcc-field-label" for="pcc-input-labour">Labour costs</label><input id="pcc-input-labour" class="pcc-field-input" type="number" min="0" step="any" value="3960" inputmode="decimal"><input id="pcc-slider-labour" class="pcc-field-slider" type="range" min="0" max="12000" step="24" value="3960" aria-label="Labour costs slider"></div>
+    <div id="pcc-field-cogs" class="pcc-field"><label id="pcc-label-cogs" class="pcc-field-label" for="pcc-input-cogs">Cost of goods sold</label><input id="pcc-input-cogs" class="pcc-field-input" type="number" min="0" step="any" value="4200" inputmode="decimal"><input id="pcc-slider-cogs" class="pcc-field-slider" type="range" min="0" max="12000" step="24" value="4200" aria-label="Cost of goods sold slider"></div>
+  </div>
+
+  <div id="pcc-result" class="pcc-result" aria-live="polite">
+    <div id="pcc-result-caption" class="pcc-result-caption">Prime cost</div>
+    <div id="pcc-result-row" class="pcc-result-row">
+      <div id="pcc-result-value" class="pcc-result-value">—</div>
+      <span id="pcc-status" class="pcc-status">Enter sales</span>
+    </div>
+  </div>
+
+  <div id="pcc-gauge" class="pcc-gauge" role="img" aria-label="Prime cost gauge">
+    <div id="pcc-gauge-zone-under" class="pcc-gauge-zone"></div>
+    <div id="pcc-gauge-zone-over" class="pcc-gauge-zone"></div>
+    <div id="pcc-gauge-benchmark" class="pcc-gauge-benchmark"></div>
+    <div id="pcc-gauge-marker" class="pcc-gauge-marker pcc-gauge-marker--hidden"></div>
+  </div>
+  <div id="pcc-scale" class="pcc-scale">
+    <span id="pcc-scale-50" class="pcc-scale-tick" style="left:0">50%</span>
+    <span id="pcc-scale-60" class="pcc-scale-tick" style="left:25%">60%</span>
+    <span id="pcc-scale-70" class="pcc-scale-tick" style="left:50%">70%</span>
+    <span id="pcc-scale-80" class="pcc-scale-tick" style="left:75%">80%</span>
+    <span id="pcc-scale-90" class="pcc-scale-tick" style="left:100%">90%</span>
+  </div>
+
+  <dl id="pcc-split" class="pcc-split">
+    <div id="pcc-split-labour" class="pcc-split-item"><dt class="pcc-split-label"><i id="pcc-swatch-labour" class="pcc-swatch"></i>Labour</dt><dd id="pcc-value-labour" class="pcc-split-value">—</dd></div>
+    <div id="pcc-split-cogs" class="pcc-split-item"><dt class="pcc-split-label"><i id="pcc-swatch-cogs" class="pcc-swatch"></i>Cost of goods</dt><dd id="pcc-value-cogs" class="pcc-split-value">—</dd></div>
+    <div id="pcc-split-rest" class="pcc-split-item"><dt class="pcc-split-label"><i id="pcc-swatch-rest" class="pcc-swatch"></i>Left for everything else</dt><dd id="pcc-value-rest" class="pcc-split-value">—</dd></div>
+  </dl>
+</main>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const money=v=>v.toLocaleString(undefined,{maximumFractionDigits:0});
+  function calc(){
+    const s=parseFloat($('pcc-input-sales').value)||0,l=parseFloat($('pcc-input-labour').value)||0,c=parseFloat($('pcc-input-cogs').value)||0;
+    const status=$('pcc-status'),marker=$('pcc-gauge-marker');
+    if(s<=0){
+      $('pcc-result-value').textContent='—';status.textContent='Enter sales';status.className='pcc-status';
+      marker.classList.add('pcc-gauge-marker--hidden');
+      ['pcc-value-labour','pcc-value-cogs','pcc-value-rest'].forEach(i=>$(i).textContent='—');
+      return;
+    }
+    const pc=(l+c)/s*100,rest=s-l-c,ok=pc<=70;
+    $('pcc-result-value').textContent=pc.toFixed(1)+'%';
+    status.className='pcc-status '+(ok?'pcc-status--good':'pcc-status--over');
+    status.textContent=ok?'Within benchmark':'Above benchmark by '+(pc-70).toFixed(1)+' pts';
+    marker.classList.remove('pcc-gauge-marker--hidden');
+    marker.style.left=Math.min(100,Math.max(0,(pc-50)/40*100))+'%';
+    $('pcc-gauge').setAttribute('aria-label','Prime cost '+pc.toFixed(1)+'% of sales against a 70% benchmark');
+    $('pcc-value-labour').textContent=money(l)+' · '+(l/s*100).toFixed(1)+'%';
+    $('pcc-value-cogs').textContent=money(c)+' · '+(c/s*100).toFixed(1)+'%';
+    $('pcc-value-rest').textContent=money(rest)+' · '+(rest/s*100).toFixed(1)+'%';
+  }
+  /* Keep each number box and its slider in step.
+     Sales slider runs 0–50,000 (extends if a larger figure is typed).
+     Labour and cost-of-goods sliders run 0–sales, so each thumb's position is that cost's share of sales. */
+  const keys=['sales','labour','cogs'],SALES_MAX=50000;
+  const num=k=>parseFloat($('pcc-input-'+k).value)||0;
+  function paint(sl){const mx=+sl.max||1;sl.style.setProperty('--pcc-fill',Math.min(100,(+sl.value/mx)*100)+'%')}
+  function sync(){
+    const s=num('sales'),sS=$('pcc-slider-sales');
+    sS.max=Math.max(SALES_MAX,Math.ceil(s/1000)*1000);sS.value=s;paint(sS);
+    ['labour','cogs'].forEach(k=>{const sl=$('pcc-slider-'+k),v=num(k);sl.max=Math.max(s,v,1);sl.step=Math.max(1,Math.round(+sl.max/500));sl.value=v;paint(sl)});
+  }
+  keys.forEach(k=>{
+    $('pcc-input-'+k).addEventListener('input',()=>{sync();calc()});
+    $('pcc-slider-'+k).addEventListener('input',e=>{$('pcc-input-'+k).value=e.target.value;sync();calc()});
+  });
+  sync();
+  calc();
+
+  /* Report the canvas height to a parent page when embedded in an iframe */
+  const canvas=$('pcc-canvas');
+  const report=()=>{try{window.parent.postMessage({type:'pcc-height',height:Math.ceil(canvas.getBoundingClientRect().height)},'*')}catch(e){}};
+  if('ResizeObserver' in window)new ResizeObserver(report).observe(canvas);
+  report();
+})();
+</script>
+</body>
+</html>
