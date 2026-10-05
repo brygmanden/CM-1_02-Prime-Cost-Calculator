@@ -161,9 +161,9 @@
     marker.classList.remove('pcc-gauge-marker--hidden');
     marker.style.left=Math.min(100,Math.max(0,(pc-50)/40*100))+'%';
     $('pcc-gauge').setAttribute('aria-label','Prime cost '+pc.toFixed(1)+'% of sales against a 70% benchmark');
-    $('pcc-value-labour').textContent=money(l)+' · '+(l/s*100).toFixed(1)+'%';
-    $('pcc-value-cogs').textContent=money(c)+' · '+(c/s*100).toFixed(1)+'%';
-    $('pcc-value-rest').textContent=money(rest)+' · '+(rest/s*100).toFixed(1)+'%';
+    $('pcc-value-labour').textContent=money(l)+' - '+(l/s*100).toFixed(1)+'%';
+    $('pcc-value-cogs').textContent=money(c)+' - '+(c/s*100).toFixed(1)+'%';
+    $('pcc-value-rest').textContent=money(rest)+' - '+(rest/s*100).toFixed(1)+'%';
   }
   /* Keep each number box and its slider in step.
      Sales slider runs 0–50,000 (extends if a larger figure is typed).
